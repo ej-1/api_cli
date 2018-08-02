@@ -1,23 +1,5 @@
 require './lib/api_client.rb'
 require './helpers/iterator_helper'
-require 'benchmark'
-require 'pry'
-
-# 25 000 times slower
-def merge(array)
-  user_ids = array.map do |hash|
-    hash['user_id']
-  end
-  new_hash = Hash.new
-  user_ids.each do |user_id|
-    # remember to REMOVE user_ids
-    new_hash[user_id] = array.select { |hash| hash['user_id'] == user_id }
-  end
-  return new_hash
-end
-
-
-
 
 
 class DriftRockCli
@@ -38,20 +20,6 @@ class DriftRockCli
         # should the output maybe be JSON?
         puts 'No user found with that email'
       else
-        # NEW SEARCHT ALGO
-=begin
-        puts Benchmark.measure {
-          new_json = merge(response_purchases['data'])
-          user_purchases = new_json[user.first['id']]
-        }
-
-        new_json = merge(response_purchases['data'])
-        user_purchases = new_json[user.first['id']]
-
-        puts Benchmark.measure {
-          purchases = select_hashes(response_purchases['data'], 'user_id', user.first['id'])
-        }
-=end
         purchases = select_hashes(response_purchases['data'], 'user_id', user.first['id'])
         spendings = map_hash_value(purchases, 'spend')
         if spendings.empty?
@@ -73,32 +41,4 @@ class DriftRockCli
   end
 end
 
-
-
-
-
-#array = ApiClient.get('/purchases')
-#puts merge(array['data'])
-
-
-puts Benchmark.measure {
-  DriftRockCli.execute(ARGV)
-}
-
-
-
-
-
-
-
-=begin
-➜  driftrock_api git:(master) ✗ ruby app.rb total_spend travis_kshlerin@wunsch.net
-333
-  0.100000   0.030000   0.130000 (  0.674347)
-➜  driftrock_api git:(master) ✗ ruby app.rb total_spend travis_kshlerin@wunsch.net
-^[[A333
-  0.090000   0.010000   0.100000 (  0.432844)
-➜  driftrock_api git:(master) ✗ ruby app.rb total_spend travis_kshlerin@wunsch.net
-333
-  0.090000   0.010000   0.100000 (  0.483813)
-=end
+DriftRockCli.execute(ARGV)
