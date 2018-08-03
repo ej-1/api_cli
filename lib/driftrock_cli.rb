@@ -30,7 +30,7 @@ class DriftrockCli
     end
   end
 
-  # test this
+  # need to test test this
   def self.handle_response(response)
     if response.first.nil?
       log(response)
