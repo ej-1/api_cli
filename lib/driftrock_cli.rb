@@ -7,7 +7,7 @@ class DriftrockCli
   def self.execute(args)
     case args[0]
     when 'most_sold'
-      response = self.handle_response(ApiClient.get('/purchases')) # TRY TO WRITE A HOOK METHOD INSTEAD
+      response = self.handle_response(ApiClient.get('/purchases'))
       result   = most_sold(response['data'])
       log(result)
     when 'total_spend' # ruby app.rb total_spend schimmel_quincy@ernser.io 
@@ -48,6 +48,7 @@ class DriftrockCli
     highest_count(users, 'item')
   end
 
+  # This method could be refactored be split up
   def self.total_spend(response_users, response_purchases, user_email)
     user = select_hashes(response_users, 'email', user_email)
     if user.empty?
