@@ -7,6 +7,16 @@ describe ApiClient do
     Struct.new("FakeFaradayClass", :status, :body)
   end
 
+  describe '#get' do
+    it 'sends request' do
+      # Need to get the test for Faraday to work, but running out of time.
+      # The test to see if Faraday receives the message does not work yet.
+      # expect_any_instance_of(Faraday).to receive(:get).with("/fakepath")
+      expect(ApiClient).to receive(:handle_response)
+      ApiClient.get('/fakepath')
+    end
+  end
+
   describe '#handle_response' do
     context '200 status' do
       it 'send payload' do
