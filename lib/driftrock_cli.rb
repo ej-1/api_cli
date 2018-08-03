@@ -12,13 +12,13 @@ class DriftrockCli
       log(result)
     when 'total_spend' # ruby app.rb total_spend schimmel_quincy@ernser.io 
       user_email = args[1]
-      if user_email.empty?
-        log('Need a user email.')
-      else
+      if user_email
         response_users = self.handle_response(ApiClient.get('/users'))
         response_purchases = self.handle_response(ApiClient.get('/purchases'))
         result = total_spend(response_users['data'], response_purchases['data'], user_email)
         log(result)
+      else
+        log('Need a user email.')
       end
     when 'most_loyal'
       response_purchases  = self.handle_response(ApiClient.get('/purchases'))
