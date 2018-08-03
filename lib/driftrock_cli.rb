@@ -1,4 +1,5 @@
 require './helpers/iterator_helper'
+require './lib/api_client.rb'
 
 class DriftrockCli
   extend IteratorHelper
@@ -6,26 +7,36 @@ class DriftrockCli
   def self.execute(args)
     case args[0]
     when 'most_sold'
-      response  = ApiClient.get('/purchases')
-      result    = most_sold(response['data'])
+      response = self.handle_response(ApiClient.get('/purchases')) # TRY TO WRITE A HOOK METHOD INSTEAD
+      result   = most_sold(response['data'])
       log(result)
     when 'total_spend' # ruby app.rb total_spend schimmel_quincy@ernser.io 
       user_email = args[1]
       if user_email.empty?
         log('Need a user email.')
       else
-        response_users      = ApiClient.get('/users')
-        response_purchases  = ApiClient.get('/purchases')
-        result = total_spend(response_users['data'], response_purchases['data'])
+        response_users = self.handle_response(ApiClient.get('/users'))
+        response_purchases = self.handle_response(ApiClient.get('/purchases'))
+        result = total_spend(response_users['data'], response_purchases['data'], user_email)
         log(result)
       end
     when 'most_loyal'
-      response            = ApiClient.get('/purchases')
-      response_users      = ApiClient.get('/users')
+      response_purchases  = self.handle_response(ApiClient.get('/purchases'))
+      response_users      = self.handle_response(ApiClient.get('/users'))
       result = most_loyal(response_users['data'], response_purchases['data'])
       log(result)
     else
-      puts 'NEED ARGUMENTS'
+      puts 'Wrong arguments! valid options. most_sold, total_spend, most_loyal'
+    end
+  end
+
+  # test this
+  def self.handle_response(response)
+    if response.first.nil?
+      log(response)
+      exit!
+    else
+      response.first
     end
   end
 
