@@ -1,12 +1,13 @@
 require 'json'
 require 'faraday'
+require 'pry'
 
 class ApiClient
 
   # BASE_URL could be stored in a separate file and passed in to make the class even more agnostic.
   BASE_URI = 'https://driftrock-dev-test.herokuapp.com'.freeze
 
-  def self.get(path) # BASE_URI
+  def self.get(path)
     # stringyfiy data here, but we don't really need that for this challenge.
     conn = Faraday.new(:url => BASE_URI)
     response = conn.get do |req|
@@ -23,7 +24,7 @@ class ApiClient
     if response.status == 200
       [JSON.parse(response.body)]
     else
-      [nil, JSON.parse(response)]
+      [nil, JSON.parse(response.body)]
     end
   end
 end
